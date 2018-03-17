@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StockCalls;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StockReelTests
 {
@@ -10,7 +12,9 @@ namespace StockReelTests
         public void TestMethod1()
         {
             Client testClient = new Client();
-            testClient.MakeRequest("ATVI", "5min");
+            var test = testClient.MakeRequest(new List<string>() { "ATVI" }).Result;
+
+            
         }
     }
 }

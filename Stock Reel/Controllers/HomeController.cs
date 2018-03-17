@@ -4,34 +4,46 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Stock_Reel.Models;
+using Stock_Reel.Services;
 
 namespace Stock_Reel.Controllers
 {
     public class HomeController : Controller
     {
+        private StockServices Service { get; }
+
+        public HomeController(StockServices service)
+        {
+            Service = service;
+        }
+
+        /// <summary>
+        /// Entrance to the app
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            // check to see if they've any stocks picked
+            var cookieString = Request.Cookies["KnownStocks"];
+
+            // if the cookie's null, dont populate the input model
+            if (string.IsNullOrWhiteSpace(cookieString))
+                return View(new StockInputModel());
+            else
+                return View(new StockInputModel(cookieString));
         }
 
-        public IActionResult About()
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult Index(StockInputModel model)
         {
-            ViewData["Message"] = "Your application description page.";
+            List<string> stocks = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["KnownStocks"]);
 
-            return View();
-        }
+            return RedirectToAction("Index");
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

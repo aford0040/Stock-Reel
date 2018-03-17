@@ -1,11 +1,19 @@
 ﻿using Newtonsoft.Json;
+using StockCalls.APICalls;
+using StockCalls.APICalls.RealTimeQuote;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace StockCalls
 {
-    public class Client
+    /// <summary>
+    /// The client that will make API calls and get stock data
+    /// </summary>
+    public class Client : HttpClient
     {
 
         #region Properties
@@ -13,8 +21,11 @@ namespace StockCalls
         /// The API key to use against the stock ticker API
         /// </summary>
         private const string APIKey = "55Y9YVNNM98SMTKR";
-
-        private const string APIRequestFormat = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}&apikey=55Y9YVNNM98SMTKR";
+        
+        /// <summary>
+        /// The format in which to make API requestsBATCH_STOCK_QUOTES&symbols=MSFT
+        /// </summary>
+        private const string APIRequestFormat = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols={symbols}&apikey=55Y9YVNNM98SMTKR";
         #endregion
 
         #region Methods
@@ -23,13 +34,33 @@ namespace StockCalls
         /// </summary>
         /// <param name="stockTicker">The quote to get</param>
         /// <param name="interval">The interval of the quote to get</param>
-        public void MakeRequest(string stockTicker, string interval)
+        public async Task<APIResult> MakeRequest(List<string> stockTicker)
         {
-            HttpClient client = new HttpClient();
-            string results = client.GetStringAsync(APIRequestFormat.Replace("{symbol}", stockTicker).Replace("{interval}", interval)).Result;
+            try
+            {
+                // make the request
+                string results = await GetStringAsync(APIRequestFormat.Replace("{symbols}", string.Join(",", stockTicker)));
+                return JsonConvert.DeserializeObject<APIResult>(results);
+            }
+            catch (Exception E)
+            {
+                throw;
+            }
 
-            var result = JsonConvert.DeserializeObject(results);
+        }
+        #endregion
 
+        #region Enums
+        /// <summary>
+        /// The stock interval in which to get data
+        /// </summary>
+        public enum StockTimeInterval
+        {
+            Min_1,
+            Min_5,
+            Min_15,
+            Min_30,
+            Min_60
         }
         #endregion
 
