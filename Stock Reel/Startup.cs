@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Stock_Reel.Services;
+using StockCalls;
 
 namespace Stock_Reel
 {
@@ -25,6 +26,7 @@ namespace Stock_Reel
         {
             services.AddMvc(m => m.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
             services.AddTransient<StockServices>();
+            services.AddTransient<Client>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

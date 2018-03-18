@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>Stock_Reel</RootNamespace>
+    <UserSecretsId>74c1b640-cbc4-4eb8-b19d-1f360e2c9c3b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
-    <PackageReference Include="Unity" Version="5.7.3" />
   </ItemGroup>
 
   <ItemGroup>

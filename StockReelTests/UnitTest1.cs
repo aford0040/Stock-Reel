@@ -12,7 +12,7 @@ namespace StockReelTests
         public void TestMethod1()
         {
             Client testClient = new Client();
-            var test = testClient.MakeRequest(new List<string>() { "ATVI" }).Result;
+            var test = testClient.GetStocksAsync(new List<string>() { "ATVI" }).Result;
 
             
         }

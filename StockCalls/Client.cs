@@ -34,7 +34,7 @@ namespace StockCalls
         /// </summary>
         /// <param name="stockTicker">The quote to get</param>
         /// <param name="interval">The interval of the quote to get</param>
-        public async Task<APIResult> MakeRequest(List<string> stockTicker)
+        public async Task<APIResult> GetStocksAsync(List<string> stockTicker)
         {
             try
             {

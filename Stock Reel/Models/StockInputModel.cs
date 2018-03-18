@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Stock_Reel.Attributes;
+using Stock_Reel.Services;
 using StockCalls;
 using StockCalls.APICalls.RealTimeQuote;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +20,8 @@ namespace Stock_Reel.Models
         /// <summary>
         /// The ticker name
         /// </summary>
+        [Required]
+        [IsKnownStock]
         public string TickerName { get; set; }
 
         /// <summary>
@@ -51,9 +56,13 @@ namespace Stock_Reel.Models
         /// <param name="cookieString">The value of the cookie that comes from the user's browser</param>
         private async void DeserializeCookie(string cookieString)
         {
+            var deserializedCookie = JsonConvert.DeserializeObject<List<string>>(cookieString);
+            if (deserializedCookie.Count == 0)
+                return;
+
             using (var apiClient = new Client())
             {
-                var apiResult = await apiClient.MakeRequest(JsonConvert.DeserializeObject<List<string>>(cookieString));
+                var apiResult = await apiClient.GetStocksAsync(deserializedCookie);
                 KnownStocks.AddRange(apiResult.StockQuotes);
             }
         }
